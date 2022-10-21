@@ -15,6 +15,7 @@ class JsonFormatter extends NormalizerFormatter
 
     /** @var self::BATCH_MODE_* */
     protected int $batchMode;
+
     protected bool $appendNewline;
     protected bool $ignoreEmptyContextAndExtra;
     protected bool $includeStackTraces = false;

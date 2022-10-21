@@ -2,8 +2,10 @@
 
 $finder = Symfony\Component\Finder\Finder::create()
     ->in([
-        __DIR__ . '/src',
-        __DIR__ . '/config',
+        __DIR__,
+    ])
+    ->exclude([
+        'vendor',
     ])
     ->name('*.php')
     ->notName('*.blade.php')
@@ -21,12 +23,18 @@ return (new PhpCsFixer\Config())
         'phpdoc_scalar' => true,
         'unary_operator_spaces' => true,
         'binary_operator_spaces' => true,
-        'blank_line_before_statement' => [
-            'statements' => ['break', 'continue', 'declare', 'return', 'throw', 'try'],
-        ],
+        'blank_line_after_namespace' => true,
+        'blank_line_after_opening_tag' => true,
+        'blank_line_before_statement' => ['statements' => ['break', 'continue', 'declare', 'return', 'throw', 'try', 'yield', 'switch']],
+        'class_attributes_separation' => ['elements' => ['const' => 'none', 'method' => 'one', 'property' => 'none', 'trait_import' => 'none', 'case' => 'none']],
+        'declare_equal_normalize' => ['space' => 'single'],
+        'include' => true,
+        'full_opening_tag' => true,
+        'function_typehint_space' => true,
         'phpdoc_single_line_var_spacing' => true,
         'phpdoc_var_without_name' => true,
         'method_argument_space' => [
+            'after_heredoc' => true,
             'on_multiline' => 'ensure_fully_multiline',
             'keep_multiple_spaces_after_comma' => true,
         ],

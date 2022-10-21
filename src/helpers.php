@@ -11,7 +11,7 @@ if (! function_exists('get_log_token')) {
             return set_log_token(request()->header('LOG_TOKEN'));
         }
 
-        return set_log_token(md5(microtime(true)));
+        return set_log_token(md5((string)microtime(true)));
     }
 }
 

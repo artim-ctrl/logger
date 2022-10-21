@@ -15,7 +15,7 @@
         "ext-json": "*",
         "illuminate/support": "^9",
         "illuminate/http": "^9",
-        "monolog/monolog": "^2",
+        "monolog/monolog": "^2.0",
         "illuminate/log": "^9",
         "illuminate/database": "^9",
         "illuminate/auth": "^9",
@@ -26,7 +26,8 @@
     },
     "require-dev": {
         "laravel/framework": "^9",
-        "friendsofphp/php-cs-fixer": "^3.11"
+        "friendsofphp/php-cs-fixer": "^3.11",
+        "nunomaduro/larastan": "^2.2"
     },
     "autoload": {
         "psr-4": {
@@ -42,6 +43,9 @@
         ],
         "lint": [
             "./vendor/bin/php-cs-fixer fix -vvv --show-progress=dots"
+        ],
+        "analyse": [
+            "./vendor/bin/phpstan analyse --memory-limit=2G"
         ]
     },
     "extra": {

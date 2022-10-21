@@ -18,7 +18,6 @@ class Logger extends BaseLogger
         1 => self::ALERT,
         0 => self::EMERGENCY,
     ];
-
     protected const TURN_OUT_PROPERTIES = [
         'user',
         'token',
@@ -30,7 +29,7 @@ class Logger extends BaseLogger
 
     public function addRecord(int $level, string $message, array $context = [], ?DateTimeImmutable $datetime = null): bool
     {
-        if (isset(self::RFC_5424_LEVELS[$level])) {
+        if (array_key_exists($level, self::RFC_5424_LEVELS)) {
             $level = self::RFC_5424_LEVELS[$level];
         }
 

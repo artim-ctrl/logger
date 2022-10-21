@@ -1,0 +1,20 @@
+#includes:
+#    - ./vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+    paths:
+        - src/
+        - config/
+
+    bootstrapFiles:
+        - bootstrap.php
+
+    # Level 9 is the highest level
+    level: 5
+
+#    ignoreErrors:
+#            - '#Unsafe usage of new static#'
+#            - '#on Laravel collection, but could have been retrieved#' # возможно нужно подключить ide-helper
+#            # 1 level errors
+#            - '#Access to an undefined property#' # возможно нужно подключить ide-helper
+#            - '#Relation .* is not found in#' # разобраться позже
