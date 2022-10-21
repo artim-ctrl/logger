@@ -92,3 +92,24 @@ It will write logs to storage/logs/laravel-test.log file:
         "token": "c56cea9b6bdd595e6cb470a3d6b53417"  
     }
 
+если вы хотите отследить действия вашего приложения даже внутри очередей, вы можете использовать класс Artim\Logger\Job
+
+    namespace Artim\Logger\Job;
+    
+    use Illuminate\Contracts\Queue\ShouldQueue;
+
+    abstract class Job implements ShouldQueue
+    {
+        protected string $logToken;
+    
+        public function __construct()
+        {
+            $this->logToken = get_log_token();
+        }
+    
+        public function handle(): void
+        {
+            set_log_token($this->logToken);
+        }
+    }
+
