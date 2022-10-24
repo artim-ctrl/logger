@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Artim\Logger\Registrators;
 
 class AppLogRegistrator extends AbstractRegistrator

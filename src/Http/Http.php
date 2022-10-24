@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Artim\Logger\Http;
 
 use Illuminate\Support\Facades\Http as BaseHttp;

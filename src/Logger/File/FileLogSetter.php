@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Artim\Logger\Logger\File;
 
 use Artim\Logger\Logger\Logger;

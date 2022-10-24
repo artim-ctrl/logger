@@ -113,7 +113,7 @@ It will write logs to storage/logs/laravel-test.log file:
 }
 ```
 
-Если вы хотите отследить действия вашего приложения даже внутри очередей, вы можете использовать класс Artim\Logger\Job
+If you want to track the action of your application inside the queues, you can use the class Artim\Logger\Job
 
 ```php
 namespace Artim\Logger\Job;

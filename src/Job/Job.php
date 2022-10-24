@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Artim\Logger\Job;
 
 use Illuminate\Contracts\Queue\ShouldQueue;

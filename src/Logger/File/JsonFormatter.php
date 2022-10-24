@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Artim\Logger\Logger\File;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use JsonSerializable;
 use Monolog\Formatter\NormalizerFormatter;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Throwable;
@@ -163,7 +166,7 @@ class JsonFormatter extends NormalizerFormatter
             }
 
             // if the object has specific json serializability we want to make sure we skip the __toString treatment below
-            if ($data instanceof \JsonSerializable) {
+            if ($data instanceof JsonSerializable) {
                 return $data;
             }
 
@@ -183,13 +186,31 @@ class JsonFormatter extends NormalizerFormatter
 
     protected function formatRequest(Request $data): array
     {
+        if (! app()->runningInConsole()) {
+            return [
+                'method' => $data->method(),
+                'uri' => $data->getPathInfo(),
+                'body' => $data->all(),
+                'headers' => $data->headers->all(),
+                'files' => $this->formatFiles($data->allFiles()),
+            ];
+        }
+
         return [
-            'method' => $data->method(),
-            'uri' => $data->getPathInfo(),
-            'body' => $data->all(),
-            'headers' => $data->headers->all(),
-            'files' => $this->formatFiles($data->allFiles()),
+            'method' => 'CLI',
+            'command' => $data->server('SCRIPT_FILENAME'),
+            'arguments' => $this->formatArguments($data),
+            'hostname' => gethostname(),
         ];
+    }
+
+    protected function formatArguments(Request $data): array
+    {
+        $arguments = $data->server('argv');
+        reset($arguments);
+        unset($arguments[0]);
+
+        return array_values($arguments);
     }
 
     protected function formatFiles(array $files): array
