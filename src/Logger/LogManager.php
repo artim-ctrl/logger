@@ -168,7 +168,7 @@ class LogManager extends BaseLogManager
         }
 
         $context['user'] = [];
-        foreach (config()->get('artim-logger.user.properties') ?? ['id'] as $property) {
+        foreach (config('artim-logger.user.properties') ?? ['id'] as $property) {
             $context['user'][$property] = auth()->user()->$property;
         }
 
