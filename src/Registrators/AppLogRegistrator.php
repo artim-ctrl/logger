@@ -15,7 +15,7 @@ class AppLogRegistrator extends AbstractRegistrator
                 'endedAt' => microtime(true),
             ];
 
-            if (config('artim-logger.log_request') ?? true) {
+            if (config('artim-logger.logs.request')) {
                 $data['request'] = request();
             }
 

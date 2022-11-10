@@ -23,8 +23,14 @@ class ArtimLoggerServiceProvider extends ServiceProvider
     {
         $this->app->make(LogRegistrator::class)->set();
         $this->app->make(HttpRegistrator::class)->set();
-        $this->app->make(DBLogRegistrator::class)->set();
-        $this->app->make(AppLogRegistrator::class)->set();
+
+        if (config('artim-logger.logs.application')) {
+            $this->app->make(AppLogRegistrator::class)->set();
+        }
+
+        if (config('artim-logger.logs.db')) {
+            $this->app->make(DBLogRegistrator::class)->set();
+        }
 
         $this->mergeConfigFrom(__DIR__ . '/../config/artim-logger.php', 'artim-logger');
     }
