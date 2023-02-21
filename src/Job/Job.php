@@ -8,15 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 abstract class Job implements ShouldQueue
 {
-    protected string $logToken;
+    use LogToken;
 
-    public function __construct()
-    {
-        $this->logToken = get_log_token();
-    }
-
-    public function handle(): void
-    {
-        set_log_token($this->logToken);
-    }
+    protected string $token;
 }

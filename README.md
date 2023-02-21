@@ -16,52 +16,57 @@ define('LARAVEL_START', microtime(true));
 
 This is necessary to fix the start time of request processing.
 
-Then we need append ArtimLoggerServiceProvider.php to app.php config
+Then we need append ArtimLoggerServiceProvider.php to app.php config.
+Here you can see the effect of configuration settings on the information that will be logged.
 
 ```php
-class ArtimLoggerServiceProvider extends ServiceProvider  
-{  
-  public function boot(): void  
-  {  
-      $this->publishes([  
-          __DIR__ . '/../config/artim-logger.php' => config_path('artim-logger.php'),  
-     ], 'config');  
-  }
+class ArtimLoggerServiceProvider extends ServiceProvider
+{
+    public function boot(): void
+    {
+        $this->publishes([
+            __DIR__ . '/../config/artim-logger.php' => config_path('artim-logger.php'),
+        ], 'config');
+    }
 
-  public function register(): void  
-  {  
-      $this->app->make(LogRegistrator::class)->set();  
-      $this->app->make(HttpRegistrator::class)->set();  
-      $this->app->make(DBLogRegistrator::class)->set();  
-      $this->app->make(AppLogRegistrator::class)->set();  
+    public function register(): void
+    {
+        $this->app->make(LogRegistrator::class)->set();
+        $this->app->make(HttpRegistrator::class)->set();
 
-      $this->mergeConfigFrom(__DIR__ . '/../config/artim-logger.php', 'artim-logger');
- }
+        if (config('artim-logger.logs.application')) {
+            $this->app->make(AppLogRegistrator::class)->set();
+        }
+
+        if (config('artim-logger.logs.db')) {
+            $this->app->make(DBLogRegistrator::class)->set();
+        }
+
+        $this->mergeConfigFrom(__DIR__ . '/../config/artim-logger.php', 'artim-logger');
+    }
 }
 ```
 
-It's register Logger
-
 ```php
-$this->app->make(LogRegistrator::class)->set();
-```
+class AppLogRegistrator extends AbstractRegistrator
+{
+    public function set(): void
+    {
+        $this->app->terminating(function () {
+            $data = [
+                'type' => 'application',
+                'startedAt' => LARAVEL_START,
+                'endedAt' => microtime(true),
+            ];
 
-It's register Http with method Http::withLogToken to add LOG-TOKEN to request in your another projects
+            if (config('artim-logger.logs.request')) {
+                $data['request'] = request();
+            }
 
-```php
-$this->app->make(HttpRegistrator::class)->set();
-```
-
-It's register DB listener on every request to database and log it
-
-```php
-$this->app->make(DBLogRegistrator::class)->set();
-```
-
-It's register handler for app-terminating event for log time and request payload
-
-```php
-$this->app->make(AppLogRegistrator::class)->set();
+            \Log::info('App terminating', $data);
+        });
+    }
+}
 ```
 
 Then we need add Http facade to list of aliases in app.php:
@@ -122,17 +127,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 abstract class Job implements ShouldQueue
 {
+    use LogToken;
+
     protected string $logToken;
-
-    public function __construct()
-    {
-        $this->logToken = get_log_token();
-    }
-
-    public function handle(): void
-    {
-        set_log_token($this->logToken);
-    }
 }
 ```
 
