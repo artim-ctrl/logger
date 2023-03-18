@@ -8,6 +8,7 @@ use Artim\Logger\Registrators\AppLogRegistrator;
 use Artim\Logger\Registrators\DBLogRegistrator;
 use Artim\Logger\Registrators\HttpRegistrator;
 use Artim\Logger\Registrators\LogRegistrator;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\ServiceProvider;
 
 class ArtimLoggerServiceProvider extends ServiceProvider
@@ -19,6 +20,9 @@ class ArtimLoggerServiceProvider extends ServiceProvider
         ], 'config');
     }
 
+    /**
+     * @throws BindingResolutionException
+     */
     public function register(): void
     {
         $this->app->make(LogRegistrator::class)->set();

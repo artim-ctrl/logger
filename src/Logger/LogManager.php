@@ -17,10 +17,7 @@ class LogManager extends BaseLogManager
      */
     public function emergency($message, array $context = []): void
     {
-        $context = $this->addUser($context);
-        $context = $this->addToken($context);
-
-        parent::emergency($message, $context);
+        $this->log(__FUNCTION__, $message, $context);
     }
 
     /**
@@ -35,10 +32,7 @@ class LogManager extends BaseLogManager
      */
     public function alert($message, array $context = []): void
     {
-        $context = $this->addUser($context);
-        $context = $this->addToken($context);
-
-        parent::alert($message, $context);
+        $this->log(__FUNCTION__, $message, $context);
     }
 
     /**
@@ -52,10 +46,7 @@ class LogManager extends BaseLogManager
      */
     public function critical($message, array $context = []): void
     {
-        $context = $this->addUser($context);
-        $context = $this->addToken($context);
-
-        parent::critical($message, $context);
+        $this->log(__FUNCTION__, $message, $context);
     }
 
     /**
@@ -68,10 +59,7 @@ class LogManager extends BaseLogManager
      */
     public function error($message, array $context = []): void
     {
-        $context = $this->addUser($context);
-        $context = $this->addToken($context);
-
-        parent::error($message, $context);
+        $this->log(__FUNCTION__, $message, $context);
     }
 
     /**
@@ -86,10 +74,7 @@ class LogManager extends BaseLogManager
      */
     public function warning($message, array $context = []): void
     {
-        $context = $this->addUser($context);
-        $context = $this->addToken($context);
-
-        parent::warning($message, $context);
+        $this->log(__FUNCTION__, $message, $context);
     }
 
     /**
@@ -101,10 +86,7 @@ class LogManager extends BaseLogManager
      */
     public function notice($message, array $context = []): void
     {
-        $context = $this->addUser($context);
-        $context = $this->addToken($context);
-
-        parent::notice($message, $context);
+        $this->log(__FUNCTION__, $message, $context);
     }
 
     /**
@@ -118,10 +100,7 @@ class LogManager extends BaseLogManager
      */
     public function info($message, array $context = []): void
     {
-        $context = $this->addUser($context);
-        $context = $this->addToken($context);
-
-        parent::info($message, $context);
+        $this->log(__FUNCTION__, $message, $context);
     }
 
     /**
@@ -133,10 +112,7 @@ class LogManager extends BaseLogManager
      */
     public function debug($message, array $context = []): void
     {
-        $context = $this->addUser($context);
-        $context = $this->addToken($context);
-
-        parent::debug($message, $context);
+        $this->log(__FUNCTION__, $message, $context);
     }
 
     /**

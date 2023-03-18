@@ -13,6 +13,7 @@ class AppLogRegistrator extends AbstractRegistrator
                 'type' => 'application',
                 'startedAt' => LARAVEL_START,
                 'endedAt' => microtime(true),
+                'peakMemoryUsage' => get_formatted_peak_memory_usage(),
             ];
 
             if (config('artim-logger.logs.request')) {

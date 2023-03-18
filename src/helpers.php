@@ -21,3 +21,16 @@ if (! function_exists('set_log_token')) {
         return $_SERVER['LOG_TOKEN'] = $logToken;
     }
 }
+
+if (! function_exists('get_formatted_peak_memory_usage')) {
+    function get_formatted_peak_memory_usage(): string
+    {
+        $bytes = memory_get_peak_usage();
+        $unit = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+        if (0 === $bytes) {
+            return '0 ' . $unit[0];
+        }
+
+        return round($bytes / pow(1000, ($i = floor(log($bytes, 1000)))), 2) . ' ' . ($unit[$i] ?? 'B');
+    }
+}
