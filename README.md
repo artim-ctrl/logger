@@ -57,6 +57,7 @@ class AppLogRegistrator extends AbstractRegistrator
                 'type' => 'application',
                 'startedAt' => LARAVEL_START,
                 'endedAt' => microtime(true),
+                'peakMemoryUsage' => get_formatted_peak_memory_usage(),
             ];
 
             if (config('artim-logger.logs.request')) {
@@ -78,43 +79,35 @@ Then we need add Http facade to list of aliases in app.php:
 Now you can append configuration for logger in logging.php:
 
 ```php
-'stack' => [  
-  'driver' => 'custom',  
-  'via' => \Artim\Logger\Logger\File\FileLogSetter::class,  
-  
-  'handler' => \Monolog\Handler\StreamHandler::class,  
-  'handler_with' => [  
-    'stream' => storage_path('logs/laravel-test.log'),  
-   ],  
-  'formatter' => \Artim\Logger\Logger\File\JsonFormatter::class,  
-  'formatter_with' => [  
-    'dateFormat' => 'Y-m-d H:i:s',  
-    'includeStackTraces' => true,  
-   ],
- ],
+'artim' => [
+    'driver' => 'monolog',
+    'level' => env('LOG_LEVEL', 'debug'),
+    'handler' => StreamHandler::class,
+    'formatter' => JsonFormatter::class,
+    'handler_with' => [
+        'stream' => storage_path('logs/laravel-artim.log'),
+    ],
+],
 ```
 
 It will write logs to storage/logs/laravel-test.log file:
+```php
+\Log::info('Some log message', ['property' => 'some value of the property']);
+```
 
 ```json
-{  
-    "message": "App terminating",  
-    "additional": {  
-        "startedAt": 1666384186.589226,  
-        "endedAt": 1666384186.745444,  
-        "request": {  
-            "method": "GET",  
-            "uri": "/",  
-            "body": [],  
-            "headers": {/* headers */},  
-            "files": []  
-        }  
-    },  
-    "level": "INFO",  
-    "datetime": "2022-10-21 20:29:46",  
-    "type": "application",  
-    "user": null,  
-    "token": "c56cea9b6bdd595e6cb470a3d6b53417"  
+{
+  "message": "Some log message",
+  "context": {
+    "property": "some value of the property",
+    "user": null,
+    "token": "cd3856c0bc1abae60ebd8f1df9d0ebb8"
+  },
+  "level": 200,
+  "level_name": "INFO",
+  "channel": "local",
+  "datetime": "2023-03-18T18:58:13.262363+00:00",
+  "extra": {}
 }
 ```
 
