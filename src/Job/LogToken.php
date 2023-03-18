@@ -11,7 +11,10 @@ trait LogToken
 {
     use SerializesAndRestoresModelIdentifiers;
 
-    public function __serialize()
+    /**
+     * @return array<string, mixed>
+     */
+    public function __serialize(): array
     {
         $this->token = get_log_token();
 
@@ -53,10 +56,10 @@ trait LogToken
     /**
      * Restore the model after serialization.
      *
-     * @param array $values
+     * @param array<string, mixed> $values
      * @return void
      */
-    public function __unserialize(array $values)
+    public function __unserialize(array $values): void
     {
         $properties = (new ReflectionClass($this))->getProperties();
 

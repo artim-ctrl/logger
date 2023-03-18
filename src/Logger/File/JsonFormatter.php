@@ -3,7 +3,6 @@
 namespace Artim\Logger\Logger\File;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Monolog\Formatter\JsonFormatter as BaseJsonFormatter;
 use Stringable;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -66,50 +65,57 @@ class JsonFormatter extends BaseJsonFormatter
         return $data;
     }
 
+    /**
+     * @param Request $data
+     * @return array<string, mixed>
+     */
     protected function formatRequest(Request $data): array
     {
-        if (! app()->runningInConsole()) {
+        if (app()->runningInConsole()) {
             return [
-                'method' => $data->method(),
-                'uri' => $data->getPathInfo(),
-                'body' => $data->all(),
-                'headers' => $data->headers->all(),
-                'files' => $this->formatFiles($data->allFiles()),
+                'method' => 'CLI',
+                'command' => $data->server('SCRIPT_FILENAME'),
+                'arguments' => $this->formatArguments($data),
+                'hostname' => gethostname(),
             ];
         }
 
+        $files = array_values(array_filter($data->allFiles(), fn (UploadedFile|array|null $file) => $file instanceof UploadedFile));
+
         return [
-            'method' => 'CLI',
-            'command' => $data->server('SCRIPT_FILENAME'),
-            'arguments' => $this->formatArguments($data),
-            'hostname' => gethostname(),
+            'method' => $data->method(),
+            'uri' => $data->getPathInfo(),
+            'body' => $data->all(),
+            'headers' => $data->headers->all(),
+            'files' => $this->formatFiles($files),
         ];
     }
 
+    /**
+     * @param Request $data
+     * @return array<string|int, string>
+     */
     protected function formatArguments(Request $data): array
     {
         $arguments = $data->server('argv');
+        if (null === $arguments) {
+            return [];
+        } elseif (is_string($arguments)) {
+            return [$arguments];
+        }
+
         reset($arguments);
         unset($arguments[0]);
 
         return array_values($arguments);
     }
 
+    /**
+     * @param array<int, UploadedFile> $files
+     * @return array<int, string>
+     */
     protected function formatFiles(array $files): array
     {
-        return Arr::flatten(array_map([$this, 'formatFile'], $files));
-    }
-
-    protected function formatFile(UploadedFile|array|string $file): array|string
-    {
-        if ($file instanceof UploadedFile) {
-            return $file->getClientOriginalName();
-        }
-
-        if (is_array($file)) {
-            return array_map([$this, 'formatFile'], $file);
-        }
-
-        return (string)$file;
+        return array_map(fn (UploadedFile $file) => $file->getClientOriginalName(), $files);
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Artim\Logger\Logger;
 
+use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Log\LogManager as BaseLogManager;
 
 class LogManager extends BaseLogManager
@@ -12,7 +13,7 @@ class LogManager extends BaseLogManager
      * System is unusable.
      *
      * @param string $message
-     * @param array $context
+     * @param array<int|string, mixed> $context
      * @return void
      */
     public function emergency($message, array $context = []): void
@@ -27,7 +28,7 @@ class LogManager extends BaseLogManager
      * trigger the SMS alerts and wake you up.
      *
      * @param string $message
-     * @param array $context
+     * @param array<int|string, mixed> $context
      * @return void
      */
     public function alert($message, array $context = []): void
@@ -41,7 +42,7 @@ class LogManager extends BaseLogManager
      * Example: Application component unavailable, unexpected exception.
      *
      * @param string $message
-     * @param array $context
+     * @param array<int|string, mixed> $context
      * @return void
      */
     public function critical($message, array $context = []): void
@@ -54,7 +55,7 @@ class LogManager extends BaseLogManager
      * be logged and monitored.
      *
      * @param string $message
-     * @param array $context
+     * @param array<int|string, mixed> $context
      * @return void
      */
     public function error($message, array $context = []): void
@@ -69,7 +70,7 @@ class LogManager extends BaseLogManager
      * that are not necessarily wrong.
      *
      * @param string $message
-     * @param array $context
+     * @param array<int|string, mixed> $context
      * @return void
      */
     public function warning($message, array $context = []): void
@@ -81,7 +82,7 @@ class LogManager extends BaseLogManager
      * Normal but significant events.
      *
      * @param string $message
-     * @param array $context
+     * @param array<int|string, mixed> $context
      * @return void
      */
     public function notice($message, array $context = []): void
@@ -95,7 +96,7 @@ class LogManager extends BaseLogManager
      * Example: User logs in, SQL logs.
      *
      * @param string $message
-     * @param array $context
+     * @param array<int|string, mixed> $context
      * @return void
      */
     public function info($message, array $context = []): void
@@ -107,7 +108,7 @@ class LogManager extends BaseLogManager
      * Detailed debug information.
      *
      * @param string $message
-     * @param array $context
+     * @param array<int|string, mixed> $context
      * @return void
      */
     public function debug($message, array $context = []): void
@@ -118,9 +119,9 @@ class LogManager extends BaseLogManager
     /**
      * Logs with an arbitrary level.
      *
-     * @param mixed $level
+     * @param string $level
      * @param string $message
-     * @param array $context
+     * @param array<int|string, mixed> $context
      * @return void
      */
     public function log($level, $message, array $context = []): void
@@ -134,12 +135,14 @@ class LogManager extends BaseLogManager
     /**
      * Add user info to log
      *
-     * @param array $context
-     * @return array
+     * @param array<int|string, mixed> $context
+     * @return array<int|string, mixed>
      */
     protected function addUser(array $context): array
     {
-        if (! auth()->hasUser()) {
+        /** @var Guard $guard */
+        $guard = auth();
+        if (! $guard->hasUser()) {
             $context['user'] = null;
 
             return $context;
@@ -147,7 +150,7 @@ class LogManager extends BaseLogManager
 
         $context['user'] = [];
         foreach (config('artim-logger.user.properties') ?? ['id'] as $property) {
-            $context['user'][$property] = auth()->user()->$property;
+            $context['user'][$property] = $guard->user()->$property;
         }
 
         return $context;
@@ -156,8 +159,8 @@ class LogManager extends BaseLogManager
     /**
      * Add request token to log
      *
-     * @param array $context
-     * @return array
+     * @param array<int|string, mixed> $context
+     * @return array<int|string, mixed>
      */
     protected function addToken(array $context): array
     {
