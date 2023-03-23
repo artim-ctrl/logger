@@ -85,7 +85,7 @@ Now you can append configuration for logger in logging.php:
     'handler' => \Monolog\Handler\RotatingFileHandler::class,
     'formatter' => \Artim\Logger\Logger\File\JsonFormatter::class,
     'handler_with' => [
-        'stream' => storage_path('logs/laravel-artim.log'),
+        'filename' => storage_path('logs/laravel-artim.log'),
     ],
 ],
 ```
