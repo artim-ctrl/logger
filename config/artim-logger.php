@@ -14,5 +14,7 @@ return [
         'db' => env('LOGS_DB', false),
         'request' => env('LOGS_REQUEST', false),
         'application' => env('LOGS_APPLICATION', false),
+
+        'schedule_terminating' => env('LOGS_SCHEDULE_TERMINATING', false),
     ],
 ];

@@ -82,8 +82,8 @@ Now you can append configuration for logger in logging.php:
 'artim' => [
     'driver' => 'monolog',
     'level' => env('LOG_LEVEL', 'debug'),
-    'handler' => StreamHandler::class,
-    'formatter' => JsonFormatter::class,
+    'handler' => \Monolog\Handler\RotatingFileHandler::class,
+    'formatter' => \Artim\Logger\Logger\File\JsonFormatter::class,
     'handler_with' => [
         'stream' => storage_path('logs/laravel-artim.log'),
     ],

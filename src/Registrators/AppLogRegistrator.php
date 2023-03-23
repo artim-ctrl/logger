@@ -8,6 +8,14 @@ class AppLogRegistrator extends AbstractRegistrator
 {
     public function set(): void
     {
+        /**
+         * Because the schedule:run command must run every minute, it will generate a log about the destruction of the Application object every minute.
+         * But this log is almost never used.
+         */
+        if ($this->app->runningInConsole() && in_array('schedule:run', request()->server('argv'), true)) {
+            return;
+        }
+
         $this->app->terminating(function () {
             $data = [
                 'type' => 'application',
