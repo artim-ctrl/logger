@@ -12,7 +12,11 @@ class AppLogRegistrator extends AbstractRegistrator
          * Because the schedule:run command must run every minute, it will generate a log about the destruction of the Application object every minute.
          * But this log is almost never used.
          */
-        if ($this->app->runningInConsole() && in_array('schedule:run', request()->server('argv'), true)) {
+        if (
+            $this->app->runningInConsole()
+            && in_array('schedule:run', request()->server('argv'), true)
+            && ! config('artim-logger.logs.schedule_terminating')
+        ) {
             return;
         }
 
